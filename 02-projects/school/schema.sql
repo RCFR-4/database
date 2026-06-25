@@ -3,21 +3,21 @@ CREATE TABLE students (
     full_name VARCHAR(100) NOT NULL,
     birth_date DATE NOT NULL,
     phone_number VARCHAR(20),
-    email VARCHAR(100)
+    email VARCHAR(100) UNIQUE
 );
 
 CREATE TABLE teachers (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20),
-    email VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
     specialization VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE subjects (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    workload INT NOT NULL,
+    workload INT NOT NULL CHECK (workload > 0),
     description VARCHAR(255)
 );
 
@@ -28,8 +28,11 @@ CREATE TABLE classes (
     class_code VARCHAR(20) NOT NULL,
     shift VARCHAR(20) NOT NULL,
     school_term VARCHAR(20) NOT NULL,
+
     FOREIGN KEY (subject_id) REFERENCES subjects(id),
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id)
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+
+    UNIQUE (class_code, school_term)
 );
 
 CREATE TABLE enrollments (
@@ -37,6 +40,9 @@ CREATE TABLE enrollments (
     class_id INT NOT NULL,
     student_id INT NOT NULL,
     enrollment_date DATE NOT NULL,
+
     FOREIGN KEY (class_id) REFERENCES classes(id),
-    FOREIGN KEY (student_id) REFERENCES students(id)
+    FOREIGN KEY (student_id) REFERENCES students(id),
+
+    UNIQUE (class_id, student_id)
 );
